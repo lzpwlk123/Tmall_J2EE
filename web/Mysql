@@ -1,0 +1,149 @@
+一共9张表
+1.用户 user
+    用户名
+    密码
+    id(主键)
+        CREATE TABLE user (
+          id int(11) NOT NULL AUTO_INCREMENT,
+          name varchar(255) DEFAULT NULL,
+          password varchar(255) DEFAULT NULL,
+          PRIMARY KEY (id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+2.产品类别 category
+    名称
+    id(主键)
+        CREATE TABLE category (
+          id int(11) NOT NULL AUTO_INCREMENT,
+          name varchar(255) DEFAULT NULL,
+          PRIMARY KEY (id)
+        ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+3.产品属性 property
+    名称
+    id(主键)
+    cid(外键,category的id)
+        CREATE TABLE property (
+          id int(11) NOT NULL AUTO_INCREMENT,
+          cid int(11) DEFAULT NULL,
+          name varchar(255) DEFAULT NULL,
+          PRIMARY KEY (id),
+          CONSTRAINT fk_property_category FOREIGN KEY (cid) REFERENCES category (id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+4.产品 product
+    名称
+    小标题
+    原始价格
+    优惠价格
+    库存
+    创建日期
+    id(主键)
+    cid(外键,category的id)
+        CREATE TABLE product (
+          id int(11) NOT NULL AUTO_INCREMENT,
+          name varchar(255) DEFAULT NULL,
+          subTitle varchar(255) DEFAULT NULL,
+          originalPrice float DEFAULT NULL,
+          promotePrice float DEFAULT NULL,
+          stock int(11) DEFAULT NULL,
+          cid int(11) DEFAULT NULL,
+          createDate datetime DEFAULT NULL,
+          PRIMARY KEY (id),
+          CONSTRAINT fk_product_category FOREIGN KEY (cid) REFERENCES category (id)
+        ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+5.产品属性值 propertyvalue
+    值
+    id（主键）
+    ptid(外键,属性表的id)
+    pid(外键,产品表的id)
+        CREATE TABLE propertyvalue (
+          id int(11) NOT NULL AUTO_INCREMENT,
+          pid int(11) DEFAULT NULL,
+          ptid int(11) DEFAULT NULL,
+          value varchar(255) DEFAULT NULL,
+          PRIMARY KEY (id),
+          CONSTRAINT fk_propertyvalue_property FOREIGN KEY (ptid) REFERENCES property (id),
+          CONSTRAINT fk_propertyvalue_product FOREIGN KEY (pid) REFERENCES product (id)
+        ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+6.产品图片 productimage
+    id（主键）
+    pid(外键,产品表的id)
+    类型：单个图片 详情图片
+        CREATE TABLE productimage (
+          id int(11) NOT NULL AUTO_INCREMENT,
+          pid int(11) DEFAULT NULL,
+          type varchar(255) DEFAULT NULL,
+          PRIMARY KEY (id),
+          CONSTRAINT fk_productimage_product FOREIGN KEY (pid) REFERENCES product (id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+7.评价 review
+    id(主键)
+    内容
+    创建时间
+    pid(外键,产品表的id)
+    uid(外键,用户表的id)
+        CREATE TABLE review (
+          id int(11) NOT NULL AUTO_INCREMENT,
+          content varchar(4000) DEFAULT NULL,
+          uid int(11) DEFAULT NULL,
+          pid int(11) DEFAULT NULL,
+          createDate datetime DEFAULT NULL,
+          PRIMARY KEY (id),
+          CONSTRAINT fk_review_product FOREIGN KEY (pid) REFERENCES product (id),
+            CONSTRAINT fk_review_user FOREIGN KEY (uid) REFERENCES user (id)
+        ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+8.订单 order_
+    id(主键)
+    订单号
+    收货地址
+    邮编
+    收货人信息
+    手机号码
+    用户备注信息
+    订单创建日期
+    支付日期
+    发货日期
+    确认收货日期
+    订单状态
+    uid(外键,用户表的id)
+        CREATE TABLE order_ (
+          id int(11) NOT NULL AUTO_INCREMENT,
+          orderCode varchar(255) DEFAULT NULL,
+          address varchar(255) DEFAULT NULL,
+          post varchar(255) DEFAULT NULL,
+          receiver varchar(255) DEFAULT NULL,
+          mobile varchar(255) DEFAULT NULL,
+          userMessage varchar(255) DEFAULT NULL,
+          createDate datetime DEFAULT NULL,
+          payDate datetime DEFAULT NULL,
+          deliveryDate datetime DEFAULT NULL,
+          confirmDate datetime DEFAULT NULL,
+          uid int(11) DEFAULT NULL,
+          status varchar(255) DEFAULT NULL,
+          PRIMARY KEY (id),
+          CONSTRAINT fk_order_user FOREIGN KEY (uid) REFERENCES user (id)
+        ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+9.订单项 orderitem
+    id
+    购买的数量
+    uid(外键,用户表的id)
+    pid(外键,产品表的id)
+    oid(外键,订单表的id，该外键未加约束，因为创建订单项的时候，其所对应的订单可能还未创建)
+        CREATE TABLE orderitem (
+          id int(11) NOT NULL AUTO_INCREMENT,
+          pid int(11) DEFAULT NULL,
+          oid int(11) DEFAULT NULL,
+          uid int(11) DEFAULT NULL,
+          number int(11) DEFAULT NULL,
+          PRIMARY KEY (id),
+          CONSTRAINT fk_orderitem_user FOREIGN KEY (uid) REFERENCES user (id),
+          CONSTRAINT fk_orderitem_product FOREIGN KEY (pid) REFERENCES product (id)
+        ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+
